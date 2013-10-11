@@ -523,19 +523,20 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 }
 
 - (void)setMaximumDrawerWidth:(CGFloat)width forSide:(MMDrawerSide)drawerSide animated:(BOOL)animated completion:(void(^)(BOOL finished))completion{
-    NSParameterAssert(width > 0);
     NSParameterAssert(drawerSide != MMDrawerSideNone);
     
     UIViewController *sideDrawerViewController = [self sideDrawerViewControllerForSide:drawerSide];
     CGFloat oldWidth = 0.f;
     NSInteger drawerSideOriginCorrection = 1;
     if (drawerSide == MMDrawerSideLeft) {
-        oldWidth = _maximumLeftDrawerWidth;
+        oldWidth = self.maximumLeftDrawerWidth;
         _maximumLeftDrawerWidth = width;
+        width = self.maximumLeftDrawerWidth;
     }
     else if(drawerSide == MMDrawerSideRight){
-        oldWidth = _maximumRightDrawerWidth;
+        oldWidth = self.maximumRightDrawerWidth;
         _maximumRightDrawerWidth = width;
+        width = self.maximumRightDrawerWidth;
         drawerSideOriginCorrection = -1;
     }
     
@@ -708,6 +709,14 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
             CFRelease(oldShadowPath);
         }
     }
+    
+    if(self.openSide == MMDrawerSideLeft && _maximumLeftDrawerWidth <= 0) {
+        [self setMaximumLeftDrawerWidth:_maximumLeftDrawerWidth animated:YES completion:nil];
+    }
+    else if(self.openSide == MMDrawerSideRight && _maximumRightDrawerWidth <= 0){
+        [self setMaximumRightDrawerWidth:_maximumRightDrawerWidth animated:YES completion:nil];
+    }
+    
     for(UIViewController * childViewController in self.childViewControllers){
         [childViewController willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
     }
@@ -843,7 +852,12 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 #pragma mark - Getters
 -(CGFloat)maximumLeftDrawerWidth{
     if(self.leftDrawerViewController){
-        return _maximumLeftDrawerWidth;
+        if (_maximumLeftDrawerWidth <= 0) {
+            return self.view.bounds.size.width + _maximumLeftDrawerWidth;
+        }
+        else {
+            return _maximumLeftDrawerWidth;
+        }
     }
     else{
         return 0;
@@ -852,7 +866,12 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 
 -(CGFloat)maximumRightDrawerWidth{
     if(self.rightDrawerViewController){
-        return _maximumRightDrawerWidth;
+        if (_maximumRightDrawerWidth <= 0) {
+            return self.view.bounds.size.width + _maximumRightDrawerWidth;
+        }
+        else {
+            return _maximumRightDrawerWidth;
+        }
     }
     else {
         return 0;
