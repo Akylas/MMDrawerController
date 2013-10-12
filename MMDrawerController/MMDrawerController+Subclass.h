@@ -27,6 +27,10 @@
  */
 
 @interface MMDrawerController (Subclass)
+
+
+-(CGFloat)roundedOriginXForDrawerConstriants:(CGFloat)originX;
+
 ///---------------------------------------
 /// @name Gesture Interaction
 ///---------------------------------------
