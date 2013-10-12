@@ -1170,6 +1170,10 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
     else {
         centerView.layer.shadowPath = [UIBezierPath bezierPathWithRect:CGRectNull].CGPath;
         centerView.layer.masksToBounds = YES;
+        
+        // !! Added line
+        centerView.layer.shadowRadius = 0;
+        centerView.layer.shadowOpacity = 0;
     }
 }
 
