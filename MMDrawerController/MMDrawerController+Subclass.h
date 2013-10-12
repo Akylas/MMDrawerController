@@ -89,6 +89,9 @@
  */
 -(void)openDrawerSide:(MMDrawerSide)drawerSide animated:(BOOL)animated velocity:(CGFloat)velocity animationOptions:(UIViewAnimationOptions)options completion:(void (^)(BOOL))completion __attribute((objc_requires_super));
 
+
+-(void)updateDrawerVisualStateForDrawerSide:(MMDrawerSide)drawerSide percentVisible:(CGFloat)percentVisible __attribute((objc_requires_super));
+
 ///---------------------------------------
 /// @name `UIViewController` Subclass Methods
 ///---------------------------------------
