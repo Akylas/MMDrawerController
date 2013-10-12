@@ -1294,8 +1294,8 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
 
 -(BOOL)isPointContainedWithinNavigationRect:(CGPoint)point{
     CGRect navigationBarRect = CGRectNull;
-    if([self.centerViewController isKindOfClass:[UINavigationController class]]){
-        UINavigationBar * navBar = [(UINavigationController*)self.centerViewController navigationBar];
+    if([self.centerViewController respondsToSelector:@selector(navigationBar)]){
+        UINavigationBar * navBar = [(id)self.centerViewController navigationBar];
         navigationBarRect = [navBar convertRect:navBar.frame toView:self.childControllerContainerView];
         navigationBarRect = CGRectIntersection(navigationBarRect,self.childControllerContainerView.bounds);
     }
