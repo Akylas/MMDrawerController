@@ -19,7 +19,7 @@
 // THE SOFTWARE.
 
 
-#import "MMDrawerController.h"
+#import "MMDrawerController+Subclass.h"
 #import "UIViewController+MMDrawerController.h"
 
 #import <QuartzCore/QuartzCore.h>
@@ -80,11 +80,6 @@ static NSString *MMDrawerRightDrawerKey = @"MMDrawerRightDrawer";
 static NSString *MMDrawerCenterKey = @"MMDrawerCenter";
 static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 
-@interface MMDrawerCenterContainerView : UIView
-@property (nonatomic,assign) MMDrawerOpenCenterInteractionMode centerInteractionMode;
-@property (nonatomic,assign) MMDrawerSide openSide;
-@end
-
 @implementation MMDrawerCenterContainerView
 
 -(UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event{
@@ -129,7 +124,6 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 @property (nonatomic, assign, readwrite) MMDrawerSide openSide;
 
 @property (nonatomic, strong) UIView * childControllerContainerView;
-@property (nonatomic, strong) MMDrawerCenterContainerView * centerContainerView;
 @property (nonatomic, strong) UIView * dummyStatusBarView;
 
 @property (nonatomic, assign) CGRect startingPanRect;

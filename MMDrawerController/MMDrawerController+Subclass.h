@@ -25,6 +25,15 @@
  
  None of these methods are meant to be called by non-subclasses of `MMDrawerController`.
  */
+@interface MMDrawerCenterContainerView : UIView
+@property (nonatomic,assign) MMDrawerOpenCenterInteractionMode centerInteractionMode;
+@property (nonatomic,assign) MMDrawerSide openSide;
+@end
+
+@interface MMDrawerController ()
+
+@property (nonatomic, strong) MMDrawerCenterContainerView * centerContainerView;
+@end
 
 @interface MMDrawerController (Subclass)
 
