@@ -396,18 +396,19 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     }
     
     _centerViewController = centerViewController;
-    
-    [self addChildViewController:self.centerViewController];
-    [self.centerViewController.view setFrame:self.childControllerContainerView.bounds];
-    [self.centerContainerView addSubview:self.centerViewController.view];
-    [self.childControllerContainerView bringSubviewToFront:self.centerContainerView];
-    [self.centerViewController.view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
-    [self updateShadowForCenterView];
-    
-    if(animated == NO){
-        [self.centerViewController beginAppearanceTransition:YES animated:NO];
-        [self.centerViewController endAppearanceTransition];
-        [self.centerViewController didMoveToParentViewController:self];
+    if (_centerViewController) {
+        [self addChildViewController:self.centerViewController];
+        [self.centerViewController.view setFrame:self.childControllerContainerView.bounds];
+        [self.centerContainerView addSubview:self.centerViewController.view];
+        [self.childControllerContainerView bringSubviewToFront:self.centerContainerView];
+        [self.centerViewController.view setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+        [self updateShadowForCenterView];
+        
+        if(animated == NO){
+            [self.centerViewController beginAppearanceTransition:YES animated:NO];
+            [self.centerViewController endAppearanceTransition];
+            [self.centerViewController didMoveToParentViewController:self];
+        }
     }
 }
 
