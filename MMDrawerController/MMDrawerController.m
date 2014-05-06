@@ -706,10 +706,10 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
         }
     }
     
-    if(self.openSide == MMDrawerSideLeft && _maximumLeftDrawerWidth <= 0) {
+    if(self.openSide == MMDrawerSideLeft) {
         [self setMaximumLeftDrawerWidth:_maximumLeftDrawerWidth animated:YES completion:nil];
     }
-    else if(self.openSide == MMDrawerSideRight && _maximumRightDrawerWidth <= 0){
+    else if(self.openSide == MMDrawerSideRight){
         [self setMaximumRightDrawerWidth:_maximumRightDrawerWidth animated:YES completion:nil];
     }
     
