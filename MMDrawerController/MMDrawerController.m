@@ -1121,12 +1121,17 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
     }
 }
 
+-(UIPanGestureRecognizer*)panGesture {
+    if (_panGesture == nil) {
+        _panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureCallback:)];
+        [_panGesture setDelegate:self];
+    }
+    return _panGesture;
+}
+
 #pragma mark - Helpers
 -(void)setupGestureRecognizers{
-    UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(panGestureCallback:)];
-    [pan setDelegate:self];
-    [self.view addGestureRecognizer:pan];
-    
+    [self.view addGestureRecognizer:[self panGesture]];
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureCallback:)];
     [tap setDelegate:self];
     [self.view addGestureRecognizer:tap];
