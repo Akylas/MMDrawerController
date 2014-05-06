@@ -1084,7 +1084,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     if (originX < -self.maximumRightDrawerWidth) {
         if (self.shouldStretchDrawer &&
             self.rightDrawerViewController) {
-            CGFloat maxOvershoot = (CGRectGetWidth(self.centerContainerView.frame)-self.maximumRightDrawerWidth)*MMDrawerOvershootPercentage;
+            CGFloat maxOvershoot = (CGRectGetWidth(self.centerContainerView.frame)-self.maximumRightDrawerWidth)*self.shouldStretchDrawer?MMDrawerOvershootPercentage:0.0f;
             return originXForDrawerOriginAndTargetOriginOffset(originX, -self.maximumRightDrawerWidth, maxOvershoot);
         }
         else{
@@ -1094,7 +1094,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     else if(originX > self.maximumLeftDrawerWidth){
         if (self.shouldStretchDrawer &&
             self.leftDrawerViewController) {
-            CGFloat maxOvershoot = (CGRectGetWidth(self.centerContainerView.frame)-self.maximumLeftDrawerWidth)*MMDrawerOvershootPercentage;
+            CGFloat maxOvershoot = (CGRectGetWidth(self.centerContainerView.frame)-self.maximumLeftDrawerWidth)*self.shouldStretchDrawer?MMDrawerOvershootPercentage:0.0f;
             return originXForDrawerOriginAndTargetOriginOffset(originX, self.maximumLeftDrawerWidth, maxOvershoot);
         }
         else{
