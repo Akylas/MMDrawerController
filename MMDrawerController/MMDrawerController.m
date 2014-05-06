@@ -119,6 +119,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     CGFloat _maximumRightDrawerWidth;
     CGFloat _maximumLeftDrawerWidth;
     UIColor * _statusBarViewBackgroundColor;
+    UIPanGestureRecognizer* _panGesture;
 }
 
 @property (nonatomic, assign, readwrite) MMDrawerSide openSide;
