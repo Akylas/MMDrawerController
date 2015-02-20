@@ -217,7 +217,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     [super decodeRestorableStateWithCoder:coder];
     
     if ((controller = [coder decodeObjectForKey:MMDrawerLeftDrawerKey])){
-        self.leftDrawerViewController = [coder decodeObjectForKey:MMDrawerLeftDrawerKey];
+        self.leftDrawerViewController = controller;
     }
 
     if ((controller = [coder decodeObjectForKey:MMDrawerRightDrawerKey])){
@@ -425,10 +425,13 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
         [self updateShadowForCenterView];
         
         if(animated == NO){
-            [self.centerViewController beginAppearanceTransition:YES animated:NO];
-            [self.centerViewController endAppearanceTransition];
-            [self.centerViewController didMoveToParentViewController:self];
-        }
+        	// If drawer is offscreen, then viewWillAppear: will take care of this
+        	if(self.view.window) {
+        	    [self.centerViewController beginAppearanceTransition:YES animated:NO];
+        	    [self.centerViewController endAppearanceTransition];
+        	}
+        	[self.centerViewController didMoveToParentViewController:self];
+    	}
     }
 }
 
@@ -812,6 +815,11 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     NSParameterAssert(drawerSide != MMDrawerSideNone);
     
     UIViewController *currentSideViewController = [self sideDrawerViewControllerForSide:drawerSide];
+
+    if (currentSideViewController == viewController) {
+        return;
+    }
+
     if (currentSideViewController != nil) {
         [currentSideViewController beginAppearanceTransition:NO animated:NO];
         [currentSideViewController.view removeFromSuperview];
@@ -1064,6 +1072,12 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
             [self updateDrawerVisualStateForDrawerSide:visibleSide percentVisible:percentVisible];
             
             [self.centerContainerView setCenter:CGPointMake(CGRectGetMidX(newFrame), CGRectGetMidY(newFrame))];
+            
+            newFrame = self.centerContainerView.frame;
+            newFrame.origin.x = floor(newFrame.origin.x);
+            newFrame.origin.y = floor(newFrame.origin.y);
+            self.centerContainerView.frame = newFrame;
+            
             break;
         }
         case UIGestureRecognizerStateEnded:
