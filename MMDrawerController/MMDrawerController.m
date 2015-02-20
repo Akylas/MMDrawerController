@@ -137,7 +137,6 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 
 @implementation MMDrawerController
 {
-    NSMutableArray* _disabledGestures;
 }
 
 #pragma mark - Init
@@ -178,7 +177,6 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
 }
 
 -(void)commonSetup{
-    _disabledGestures = [NSMutableArray new];
     [self setMaximumLeftDrawerWidth:MMDrawerDefaultWidth];
     [self setMaximumRightDrawerWidth:MMDrawerDefaultWidth];
     
@@ -217,7 +215,7 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     [super decodeRestorableStateWithCoder:coder];
     
     if ((controller = [coder decodeObjectForKey:MMDrawerLeftDrawerKey])){
-        self.leftDrawerViewController = controller;
+        self.leftDrawerViewController = [coder decodeObjectForKey:MMDrawerLeftDrawerKey];
     }
 
     if ((controller = [coder decodeObjectForKey:MMDrawerRightDrawerKey])){
@@ -815,11 +813,6 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
     NSParameterAssert(drawerSide != MMDrawerSideNone);
     
     UIViewController *currentSideViewController = [self sideDrawerViewControllerForSide:drawerSide];
-
-    if (currentSideViewController == viewController) {
-        return;
-    }
-
     if (currentSideViewController != nil) {
         [currentSideViewController beginAppearanceTransition:NO animated:NO];
         [currentSideViewController.view removeFromSuperview];
@@ -1082,11 +1075,6 @@ static NSString *MMDrawerOpenSideKey = @"MMDrawerOpenSide";
         }
         case UIGestureRecognizerStateEnded:
         case UIGestureRecognizerStateCancelled: {
-            [_disabledGestures enumerateObjectsUsingBlock:^(UIGestureRecognizer* recognizer, NSUInteger idx, BOOL *stop) {
-                recognizer.enabled = YES;
-            }];
-            [_disabledGestures removeAllObjects];
-
             self.startingPanRect = CGRectNull;
             CGPoint velocity = [panGesture velocityInView:self.childControllerContainerView];
             [self finishAnimationForPanGestureWithXVelocity:velocity.x completion:^(BOOL finished) {
@@ -1359,8 +1347,8 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
     }
     CGPoint velocity = [self.panGesture velocityInView:self.panGesture.view];
     BOOL isHorizontalGesture = fabs(velocity.y) < fabs(velocity.x);
-    
-    if ([otherGestureRecognizer.view isKindOfClass:[UITableView class]]) {
+    UIView* view = otherGestureRecognizer.view;
+    if ([view isKindOfClass:[UITableView class]]) {
         if (isHorizontalGesture) {
             BOOL directionIsLeft = velocity.x < 0;
             if (directionIsLeft) {
@@ -1371,7 +1359,7 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
                 }
             } else {
                 //if direction is to right
-                UITableView *tableView = (UITableView *)otherGestureRecognizer.view;
+                UITableView *tableView = (UITableView *)view;
                 CGPoint point = [otherGestureRecognizer locationInView:tableView];
                 NSIndexPath *indexPath = [tableView indexPathForRowAtPoint:point];
                 UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
@@ -1382,7 +1370,8 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
                 }
             }
         }
-    } else if ([otherGestureRecognizer.view isKindOfClass:NSClassFromString(@"UITableViewCellScrollView")]) {
+    } else if ([view isKindOfClass:NSClassFromString(@"UITableViewCellScrollView")] ||
+               [view isKindOfClass:[UITableViewCell class]]) {
         return YES;
     }
     
@@ -1397,7 +1386,6 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
     }
     CGPoint velocity = [self.panGesture velocityInView:self.panGesture.view];
     BOOL isHorizontalGesture = fabs(velocity.y) < fabs(velocity.x);
-    
     return isHorizontalGesture;
 }
 
@@ -1413,11 +1401,13 @@ static inline CGFloat originXForDrawerOriginAndTargetOriginOffset(CGFloat origin
         CGPoint point = [gestureRecognizer locationInView:gestureRecognizer.view];
         if(([self isPointContainedWithinLeftBezelRect:point] && self.leftDrawerViewController) ||
            ([self isPointContainedWithinRightBezelRect:point] && self.rightDrawerViewController)){
-            if ([otherGestureRecognizer isKindOfClass:NSClassFromString([NSString stringWithFormat:@"UIScrollView%@", @"PanGestureRecognizer" ])]) {
-                [_disabledGestures addObject:otherGestureRecognizer];
-                otherGestureRecognizer.enabled = NO;
-                return YES;
-            }
+//            if ([otherGestureRecognizer isKindOfClass:NSClassFromString([NSString stringWithFormat:@"UIScrollView%@", @"PanGestureRecognizer" ])]) {
+//                otherGestureRecognizer.enabled = NO;
+//                otherGestureRecognizer.enabled = YES;
+//            }
+            otherGestureRecognizer.enabled = NO;
+            otherGestureRecognizer.enabled = YES;
+            return YES;
         }
     }
     return NO;
